@@ -6,6 +6,7 @@
 package load
 
 import (
+	"context"
 	"errors"
 
 	"golang.org/x/exp/shiny/materialdesign/icons"
@@ -16,6 +17,7 @@ import (
 	"gioui.org/widget"
 
 	"github.com/planetdecred/dcrlibwallet"
+	"github.com/planetdecred/godcr/dexc"
 	"github.com/planetdecred/godcr/ui/assets"
 	"github.com/planetdecred/godcr/ui/decredmaterial"
 	"github.com/planetdecred/godcr/ui/notification"
@@ -57,11 +59,14 @@ type Icons struct {
 	TicketExpiredIcon,
 	TicketRevokedIcon,
 	TicketUnminedIcon *decredmaterial.Image
+
+	DexLogo, BTC, DCR, LTC, BCH *decredmaterial.Image
 }
 
 type Load struct {
 	Theme *decredmaterial.Theme
 
+	AppCtx   context.Context
 	WL       *WalletLoad
 	Receiver *Receiver
 	Printer  *message.Printer
@@ -74,6 +79,8 @@ type Load struct {
 	SelectedWallet  *int
 	SelectedAccount *int
 	SelectedUTXO    map[int]map[int32]map[string]*wallet.UnspentOutput
+
+	Dexc *dexc.Dexc
 
 	ToggleSync       func()
 	RefreshWindow    func()
@@ -111,6 +118,7 @@ func NewLoad() (*Load, error) {
 	if th == nil {
 		return nil, errors.New("unexpected error while loading theme")
 	}
+
 	l := &Load{
 		Theme:    th,
 		Icons:    icons,
@@ -213,6 +221,12 @@ func loadIcons() Icons {
 		ListGridIcon:             decredmaterial.NewImage(decredIcons["list_grid"]),
 		DecredSymbolIcon:         decredmaterial.NewImage(decredIcons["decred_symbol"]),
 		DecredSymbol2:            decredmaterial.NewImage(decredIcons["ic_decred02"]),
+
+		DexLogo: decredmaterial.NewImage(decredIcons["dex_logo"]),
+		BTC:     decredmaterial.NewImage(decredIcons["dex_btc"]),
+		DCR:     decredmaterial.NewImage(decredIcons["dex_dcr"]),
+		BCH:     decredmaterial.NewImage(decredIcons["dex_bch"]),
+		LTC:     decredmaterial.NewImage(decredIcons["dex_ltc"]),
 	}
 	return ic
 }
