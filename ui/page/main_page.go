@@ -175,48 +175,22 @@ func (mp *MainPage) initNavItems() {
 			},
 			{
 				Clickable:     mp.Theme.NewClickable(true),
-				Image:         mp.Icons.MoreIcon,
-				ImageInactive: mp.Icons.MoreIconInactive,
-				Title:         values.String(values.StrMore),
-				PageID:        MorePageID,
-			},
-			{
-				Clickable:     mp.Theme.NewClickable(true),
 				Image:         mp.Icons.DexLogo,
 				ImageInactive: mp.Icons.DexLogo,
 				Title:         values.String(values.StrDex),
 				PageID:        dexclient.MarketPageID,
 			},
+			{
+				Clickable:     mp.Theme.NewClickable(true),
+				Image:         mp.Icons.MoreIcon,
+				ImageInactive: mp.Icons.MoreIconInactive,
+				Title:         values.String(values.StrMore),
+				PageID:        MorePageID,
+			},
 		},
 		MinimizeNavDrawerButton: mp.Theme.PlainIconButton(mp.Icons.NavigationArrowBack),
 		MaximizeNavDrawerButton: mp.Theme.PlainIconButton(mp.Icons.NavigationArrowForward),
 	}
-}
-
-// startDexClientIfNotStarted gets the DEX client reaady for use if not already
-// started. The DEX client will try to load previously connected wallets, so
-// this method should only be called after the main page is loaded and sync is
-// started to ensure that at least 1 decred wallet is loaded and ready for use.
-func (mp *MainPage) startDexClientIfNotStarted() {
-	if mp.Dexc.IsRunning {
-		return
-	}
-
-	// If we've previously connected a dcr wallet to the DEX client, re-assign
-	// the previously connected wallet to the DEX client so it can reconnect to
-	// the dcr wallet once we start it below.
-	// If a dcr wallet wasn't previously connected, the user will be prompted
-	// to select a dcr wallet when the DEX tab is opened and the selected wallet
-	// will be assigned to the DEX client.
-	multiwallet := mp.WL.MultiWallet
-	dexDcrWalletID := multiwallet.ReadIntConfigValueForKey(dexc.ConnectedDcrWalletIDConfigKey, -1)
-	if dexDcrWallet := multiwallet.WalletWithID(dexDcrWalletID); dexDcrWallet != nil {
-		mp.Load.Dexc.SetWalletForDcrAsset(dexDcrWallet)
-	}
-
-	// Pass app-wide context that is canceled when the godcr app is shutdown,
-	// so that the DEX client will be shut down when godcr is shut down.
-	mp.Load.Dexc.Start(mp.AppCtx)
 }
 
 func (mp *MainPage) OnResume() {
@@ -355,29 +329,28 @@ func (mp *MainPage) Handle() {
 		}
 	}
 
-	for i, item := range mp.drawerNav.DrawerNavItems {
+	for _, item := range mp.drawerNav.DrawerNavItems {
 		for item.Clickable.Clicked() {
 			var pg load.Page
-			if i == OverviewNavID {
+			switch item.PageID {
+			case OverviewPageID:
 				pg = NewOverviewPage(mp.Load)
-			} else if i == TransactionsNavID {
+			case TransactionsPageID:
 				pg = NewTransactionsPage(mp.Load)
-			} else if i == WalletsNavID {
+			case WalletPageID:
 				pg = NewWalletPage(mp.Load)
-			} else if i == TicketsNavID {
+			case tickets.OverviewPageID:
 				pg = tickets.NewTicketPage(mp.Load)
-			} else if i == ProposalsNavID {
+			case proposal.ProposalsPageID:
 				pg = proposal.NewProposalsPage(mp.Load)
-			} else if i == MoreNavID {
-				pg = NewMorePage(mp.Load)
-			} else if i == DexNavID {
+			case dexclient.MarketPageID:
 				mp.startDexClientIfNotStarted()
 				pg = dexclient.NewMarketPage(mp.Load)
-			} else {
-				continue
+			case MorePageID:
+				pg = NewMorePage(mp.Load)
 			}
 
-			if pg.ID() == mp.currentPageID() {
+			if pg == nil || pg.ID() == mp.currentPageID() {
 				continue
 			}
 
@@ -391,6 +364,32 @@ func (mp *MainPage) Handle() {
 		mp.isBalanceHidden = !mp.isBalanceHidden
 		mp.WL.MultiWallet.SetBoolConfigValueForKey(HideBalanceConfigKey, mp.isBalanceHidden)
 	}
+}
+
+// startDexClientIfNotStarted gets the DEX client reaady for use if not already
+// started. The DEX client will try to load previously connected wallets, so
+// this method should only be called after the main page is loaded and sync is
+// started to ensure that at least 1 decred wallet is loaded and ready for use.
+func (mp *MainPage) startDexClientIfNotStarted() {
+	if mp.Dexc.IsRunning {
+		return
+	}
+
+	// If we've previously connected a dcr wallet to the DEX client, re-assign
+	// the previously connected wallet to the DEX client so it can reconnect to
+	// the dcr wallet once we start it below.
+	// If a dcr wallet wasn't previously connected, the user will be prompted
+	// to select a dcr wallet when the DEX tab is opened and the selected wallet
+	// will be assigned to the DEX client.
+	multiwallet := mp.WL.MultiWallet
+	dexDcrWalletID := multiwallet.ReadIntConfigValueForKey(dexc.ConnectedDcrWalletIDConfigKey, -1)
+	if dexDcrWallet := multiwallet.WalletWithID(dexDcrWalletID); dexDcrWallet != nil {
+		mp.Load.Dexc.SetWalletForDcrAsset(dexDcrWallet)
+	}
+
+	// Pass app-wide context that is canceled when the godcr app is shutdown,
+	// so that the DEX client will be shut down when godcr is shut down.
+	mp.Load.Dexc.Start(mp.AppCtx)
 }
 
 func (mp *MainPage) OnClose() {
