@@ -21,17 +21,8 @@ import (
 	"github.com/planetdecred/godcr/ui/values"
 )
 
-const MainPageID = "Main"
-
 const (
-	OverviewNavID = iota
-	TransactionsNavID
-	WalletsNavID
-	TicketsNavID
-	ProposalsNavID
-	MoreNavID
-	DexNavID
-
+	MainPageID           = "Main"
 	HideBalanceConfigKey = "hide_balance"
 )
 
