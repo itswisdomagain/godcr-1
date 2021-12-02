@@ -23,21 +23,26 @@ type inputVoteOptionsWidgets struct {
 }
 
 func newInputVoteOptions(l *load.Load, label string) *inputVoteOptionsWidgets {
+	iconBtnStyle := &values.IconButtonStyle{
+		Color:      l.Theme.Color.Text,
+		Background: color.NRGBA{},
+	}
 	i := &inputVoteOptionsWidgets{
 		label:     label,
 		activeBg:  l.Theme.Color.Green50,
 		dotColor:  l.Theme.Color.Green500,
 		input:     l.Theme.Editor(new(widget.Editor), ""),
-		increment: l.Theme.PlainIconButton(l.Icons.ContentAdd),
-		decrement: l.Theme.PlainIconButton(l.Icons.ContentRemove),
+		increment: l.Theme.StyledIconButton(l.Icons.ContentAdd, iconBtnStyle),
+		decrement: l.Theme.StyledIconButton(l.Icons.ContentRemove, iconBtnStyle),
 		max:       l.Theme.Button("MAX"),
 	}
 	i.max.Background = l.Theme.Color.Surface
 	i.max.Color = l.Theme.Color.GrayText1
 	i.max.Font.Weight = text.SemiBold
 
-	i.increment.Color, i.decrement.Color = l.Theme.Color.Text, l.Theme.Color.Text
-	i.increment.Size, i.decrement.Size = values.TextSize18, values.TextSize18
+	i.increment.SetSize(values.TextSize18)
+	i.decrement.SetSize(values.TextSize18)
+
 	i.input.Bordered = false
 	i.input.Editor.SetText("0")
 	i.input.Editor.Alignment = text.Middle
@@ -58,7 +63,7 @@ func (i *inputVoteOptionsWidgets) reset() {
 }
 
 func (vm *voteModal) handleVoteCountButtons(i *inputVoteOptionsWidgets) {
-	if i.increment.Button.Clicked() {
+	if i.increment.Clicked() {
 		value, err := strconv.Atoi(i.input.Editor.Text())
 		if err != nil {
 			return
@@ -70,7 +75,7 @@ func (vm *voteModal) handleVoteCountButtons(i *inputVoteOptionsWidgets) {
 		i.input.Editor.SetText(fmt.Sprintf("%d", value))
 	}
 
-	if i.decrement.Button.Clicked() {
+	if i.decrement.Clicked() {
 		value, err := strconv.Atoi(i.input.Editor.Text())
 		if err != nil {
 			return

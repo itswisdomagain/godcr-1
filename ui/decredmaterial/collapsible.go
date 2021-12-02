@@ -52,7 +52,7 @@ func (t *Theme) CollapsibleWithOption() *CollapsibleWithOption {
 		expandedIcon:    t.collapseIcon,
 		collapsedIcon:   t.expandIcon,
 		moreIconButton: IconButton{
-			IconButtonStyle: material.IconButtonStyle{
+			btn: material.IconButtonStyle{
 				Button:     new(widget.Clickable),
 				Icon:       t.navMoreIcon,
 				Size:       unit.Dp(25),
@@ -155,5 +155,5 @@ func (c *CollapsibleWithOption) Layout(gtx layout.Context, header, body func(C) 
 }
 
 func (c *CollapsibleWithOption) MoreTriggered() bool {
-	return c.moreIconButton.Button.Clicked()
+	return c.moreIconButton.Clicked()
 }

@@ -86,7 +86,7 @@ func NewRestorePage(l *load.Load) *Restore {
 	pg.resetSeedFields.Font.Weight = text.Medium
 
 	pg.backButton, _ = components.SubpageHeaderButtons(l)
-	pg.backButton.Icon = pg.Icons.ContentClear
+	pg.backButton.SetIcon(pg.Icons.ContentClear)
 
 	for i := 0; i <= numberOfSeeds; i++ {
 		widgetEditor := new(widget.Editor)
@@ -412,7 +412,7 @@ func (pg *Restore) resetSeeds() {
 }
 
 func (pg *Restore) Handle() {
-	for pg.backButton.Button.Clicked() {
+	for pg.backButton.Clicked() {
 		pg.PopWindowPage()
 	}
 

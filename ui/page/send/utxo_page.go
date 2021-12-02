@@ -82,15 +82,15 @@ func (pg *UTXOPage) Handle() {
 			if (*pg.unspentOutputsSelected)[pg.selectedWalletID][pg.selectedAccountID][utxo.UTXO.OutputKey] != nil {
 				pg.checkboxes[i].CheckBox.Value = true
 			}
-			icoBtn := pg.Theme.IconButton(decredmaterial.MustIcon(widget.NewIcon(icons.ContentContentCopy)))
-			icoBtn.Inset, icoBtn.Size = layout.UniformInset(values.MarginPadding5), values.MarginPadding20
-			icoBtn.Background = pg.Theme.Color.Gray4
+			icoBtn := pg.Theme.StyledIconButton(decredmaterial.MustIcon(widget.NewIcon(icons.ContentContentCopy)), &values.IconButtonStyle{Background: pg.Theme.Color.Gray4})
+			icoBtn.SetInset(layout.UniformInset(values.MarginPadding5))
+			icoBtn.SetSize(values.MarginPadding20)
 			pg.copyButtons[i] = icoBtn
 		}
 		pg.calculateAmountAndFeeUTXO()
 	}
 
-	if pg.backButton.Button.Clicked() {
+	if pg.backButton.Clicked() {
 		pg.clearPageData()
 		pg.PopFragment()
 	}
@@ -295,7 +295,7 @@ func (pg *UTXOPage) utxoRow(gtx C, data *wallet.UnspentOutput, index int) D {
 			return txt.Layout(gtx)
 		}),
 		layout.Rigid(func(gtx C) D {
-			if pg.copyButtons[index].Button.Clicked() {
+			if pg.copyButtons[index].Clicked() {
 				clipboard.WriteOp{Text: data.UTXO.Addresses}.Add(gtx.Ops)
 			}
 			return layout.Inset{Left: values.MarginPadding10}.Layout(gtx, pg.copyButtons[index].Layout)

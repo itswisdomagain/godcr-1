@@ -104,10 +104,9 @@ func NewOverviewPage(l *load.Load) *AppOverviewPage {
 		bestBlock: l.WL.MultiWallet.GetBestBlock(),
 	}
 
-	pg.toMixer = l.Theme.PlainIconButton(l.Icons.NavigationArrowForward)
-	pg.toMixer.Color = l.Theme.Color.Gray1
-	pg.toMixer.Size = values.MarginPadding24
-	pg.toMixer.Inset = layout.UniformInset(values.MarginPadding4)
+	pg.toMixer = l.Theme.IconButton(l.Icons.NavigationArrowForward)
+	pg.toMixer.SetSize(values.MarginPadding24)
+	pg.toMixer.SetInset(layout.UniformInset(values.MarginPadding4))
 
 	pg.initRecentTxWidgets()
 	pg.initWalletStatusWidgets()
@@ -237,7 +236,7 @@ func (pg *AppOverviewPage) Handle() {
 		}
 	}
 
-	if pg.toMixer.Button.Clicked() {
+	if pg.toMixer.Clicked() {
 		if len(pg.mixerWallets) == 1 {
 			pg.ChangeFragment(wPage.NewPrivacyPage(pg.Load, pg.mixerWallets[0]))
 		}

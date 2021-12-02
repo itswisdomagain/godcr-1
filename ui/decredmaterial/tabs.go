@@ -214,11 +214,13 @@ func (t *Tabs) scrollButton(right bool, button *widget.Clickable) layout.FlexChi
 	}
 	return layout.Rigid(func(gtx C) D {
 		if (t.Position == Top || t.Position == Bottom) && show {
-			t.iconButton.Icon = icon
-			t.iconButton.Size = unit.Dp(20)
-			t.iconButton.Color = rgb(0xbbbbbb)
-			t.iconButton.Background = color.NRGBA{}
-			t.iconButton.Button = button
+			t.iconButton.SetIcon(icon)
+			t.iconButton.SetClickable(button)
+			t.iconButton.SetSize(unit.Dp(20))
+			t.iconButton.SetStyle(&values.IconButtonStyle{ // TODO: This overrides the default style that changes color based on theme!
+				Background: color.NRGBA{},
+				Color:      rgb(0xbbbbbb),
+			})
 			return t.iconButton.Layout(gtx)
 		}
 		return layout.Dimensions{}

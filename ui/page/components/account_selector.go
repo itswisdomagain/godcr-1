@@ -215,10 +215,9 @@ func newAccountSelectorModal(l *load.Load, currentSelectedAccount *dcrlibwallet.
 		isCancelable:           true,
 	}
 
-	asm.walletInfoButton = l.Theme.PlainIconButton(asm.Icons.ActionInfo)
-	asm.walletInfoButton.Color = asm.Theme.Color.Gray1
-	asm.walletInfoButton.Size = values.MarginPadding15
-	asm.walletInfoButton.Inset = layout.UniformInset(values.MarginPadding0)
+	asm.walletInfoButton = l.Theme.IconButton(asm.Icons.ActionInfo)
+	asm.walletInfoButton.SetSize(values.MarginPadding15)
+	asm.walletInfoButton.SetInset(layout.UniformInset(values.MarginPadding0))
 
 	return asm
 }

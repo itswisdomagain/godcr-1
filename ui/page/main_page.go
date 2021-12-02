@@ -77,10 +77,11 @@ func NewMainPage(l *load.Load) *MainPage {
 		Load: l,
 	}
 
-	mp.hideBalanceItem.hideBalanceButton = mp.Theme.PlainIconButton(mp.Icons.ConcealIcon)
-	mp.hideBalanceItem.hideBalanceButton.Color = mp.Theme.Color.Gray1
-	mp.hideBalanceItem.hideBalanceButton.Size = unit.Dp(19)
-	mp.hideBalanceItem.hideBalanceButton.Inset = layout.UniformInset(values.MarginPadding4)
+	mp.hideBalanceItem.hideBalanceButton = mp.Theme.IconButton(mp.Icons.ConcealIcon)
+	mp.hideBalanceItem.hideBalanceButton.SetSize(unit.Dp(19))
+	mp.hideBalanceItem.hideBalanceButton.SetInset(layout.UniformInset(values.MarginPadding4))
+	mp.hideBalanceItem.hideBalanceButton.SetStyle(nil)
+	panic("o")
 	mp.hideBalanceItem.tooltip = mp.Theme.Tooltip()
 
 	// init shared page functions
@@ -176,8 +177,8 @@ func (mp *MainPage) initNavItems() {
 				PageID:        MorePageID,
 			},
 		},
-		MinimizeNavDrawerButton: mp.Theme.PlainIconButton(mp.Icons.NavigationArrowBack),
-		MaximizeNavDrawerButton: mp.Theme.PlainIconButton(mp.Icons.NavigationArrowForward),
+		MinimizeNavDrawerButton: mp.Theme.IconButton(mp.Icons.NavigationArrowBack),
+		MaximizeNavDrawerButton: mp.Theme.IconButton(mp.Icons.NavigationArrowForward),
 	}
 }
 
@@ -293,11 +294,11 @@ func (mp *MainPage) Handle() {
 	mp.drawerNav.CurrentPage = mp.currentPageID()
 	mp.appBarNav.CurrentPage = mp.currentPageID()
 
-	for mp.drawerNav.MinimizeNavDrawerButton.Button.Clicked() {
+	for mp.drawerNav.MinimizeNavDrawerButton.Clicked() {
 		mp.drawerNav.DrawerToggled(true)
 	}
 
-	for mp.drawerNav.MaximizeNavDrawerButton.Button.Clicked() {
+	for mp.drawerNav.MaximizeNavDrawerButton.Clicked() {
 		mp.drawerNav.DrawerToggled(false)
 	}
 
@@ -351,7 +352,7 @@ func (mp *MainPage) Handle() {
 	}
 
 	mp.isBalanceHidden = mp.WL.MultiWallet.ReadBoolConfigValueForKey(load.HideBalanceConfigKey, false)
-	for mp.hideBalanceItem.hideBalanceButton.Button.Clicked() {
+	for mp.hideBalanceItem.hideBalanceButton.Clicked() {
 		mp.isBalanceHidden = !mp.isBalanceHidden
 		mp.WL.MultiWallet.SetBoolConfigValueForKey(load.HideBalanceConfigKey, mp.isBalanceHidden)
 	}
@@ -573,12 +574,15 @@ func (mp *MainPage) LayoutTopBar(gtx layout.Context) layout.Dimensions {
 										return layout.Dimensions{}
 									}),
 									layout.Rigid(func(gtx C) D {
-										mp.hideBalanceItem.tooltipLabel = mp.Theme.Caption("Hide Balance")
-										mp.hideBalanceItem.hideBalanceButton.Icon = mp.Icons.RevealIcon
+										mp.hideBalanceItem.hideBalanceButton.SetStyle(nil)
 										if mp.isBalanceHidden {
 											mp.hideBalanceItem.tooltipLabel.Text = "Show Balance"
-											mp.hideBalanceItem.hideBalanceButton.Icon = mp.Icons.ConcealIcon
+											mp.hideBalanceItem.hideBalanceButton.SetIcon(mp.Icons.ConcealIcon)
+										} else {
+											mp.hideBalanceItem.tooltipLabel = mp.Theme.Caption("Hide Balance")
+											mp.hideBalanceItem.hideBalanceButton.SetIcon(mp.Icons.RevealIcon)
 										}
+										mp.hideBalanceItem.hideBalanceButton.SetStyle(nil)
 										return layout.Inset{
 											Top:  values.MarginPadding1,
 											Left: values.MarginPadding9,

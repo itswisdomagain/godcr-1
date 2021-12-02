@@ -51,36 +51,7 @@ type Color struct {
 	White            color.NRGBA
 }
 
-func SetThemeColor(darkMode bool) *Color {
-	c := &Color{}
-	c.defualtThemeColors()
-	if darkMode {
-		c.darkThemeColors()
-	}
-	return c
-}
-
-func (c *Color) darkThemeColors() {
-	c.Primary = rgb(0x57B6FF)
-
-	// text colors
-	c.Text = argb(0x99FFFFFF)
-	c.GrayText1 = argb(0xDEFFFFFF)
-	c.GrayText2 = argb(0x99FFFFFF)
-	c.GrayText3 = argb(0x61FFFFFF)
-	c.GrayText4 = argb(0x61FFFFFF)
-
-	// background colors
-	c.DeepBlue = argb(0x99FFFFFF)
-	c.Gray1 = argb(0x99FFFFFF)
-	c.Gray2 = rgb(0x3D3D3D)
-	c.Gray3 = rgb(0x8997a5)
-	c.Gray4 = rgb(0x121212)
-	c.Gray5 = rgb(0x363636)
-	c.Surface = rgb(0x252525)
-}
-
-func (c *Color) defualtThemeColors() *Color {
+func (c *Color) DefualtThemeColors() *Color {
 	c.Primary = rgb(0x2970ff)
 	c.Primary50 = rgb(0xE3F2FF)
 	c.PrimaryHighlight = rgb(0x1B41B3)
@@ -128,6 +99,28 @@ func (c *Color) defualtThemeColors() *Color {
 	c.White = rgb(0xffffff)
 
 	return c
+}
+
+func (c *Color) DarkThemeColors() {
+	c.DefualtThemeColors() // set default colors before overriding with select alternate colors for dark theme.
+
+	c.Primary = rgb(0x57B6FF)
+
+	// text colors
+	c.Text = argb(0x99FFFFFF)
+	c.GrayText1 = argb(0xDEFFFFFF)
+	c.GrayText2 = argb(0x99FFFFFF)
+	c.GrayText3 = argb(0x61FFFFFF)
+	c.GrayText4 = argb(0x61FFFFFF)
+
+	// background colors
+	c.DeepBlue = argb(0x99FFFFFF)
+	c.Gray1 = argb(0x99FFFFFF)
+	c.Gray2 = rgb(0x3D3D3D)
+	c.Gray3 = rgb(0x8997a5)
+	c.Gray4 = rgb(0x121212)
+	c.Gray5 = rgb(0x363636)
+	c.Surface = rgb(0x252525)
 }
 
 func rgb(c uint32) color.NRGBA {

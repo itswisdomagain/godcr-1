@@ -107,14 +107,9 @@ func NewWalletPage(l *load.Load) *WalletPage {
 	pg.watchOnlyWalletLabel = pg.Theme.Body1(values.String(values.StrWatchOnlyWallets))
 	pg.watchOnlyWalletLabel.Color = pg.Theme.Color.GrayText2
 
-	pg.iconButton = decredmaterial.IconButton{
-		IconButtonStyle: material.IconButtonStyle{
-			Size:       unit.Dp(25),
-			Background: color.NRGBA{},
-			Color:      pg.Theme.Color.Gray1,
-			Inset:      layout.UniformInset(unit.Dp(0)),
-		},
-	}
+	pg.iconButton = pg.Theme.IconButton(pg.Icons.NavigationMore)
+	pg.iconButton.SetInset(layout.UniformInset(unit.Dp(0)))
+	pg.iconButton.SetSize(unit.Dp(25))
 
 	pg.optionsMenuCard = decredmaterial.Card{Color: pg.Theme.Color.Surface}
 	pg.optionsMenuCard.Radius = decredmaterial.Radius(5)
@@ -163,16 +158,12 @@ func (pg *WalletPage) loadWalletAndAccounts() {
 		}
 
 		if wal.IsWatchingOnlyWallet() {
-			moreBtn := decredmaterial.IconButton{
-				IconButtonStyle: material.IconButtonStyle{
-					Button:     new(widget.Clickable),
-					Icon:       pg.Icons.NavigationMore,
-					Size:       values.MarginPadding25,
-					Background: color.NRGBA{},
-					Color:      pg.Theme.Color.Text,
-					Inset:      layout.UniformInset(values.MarginPadding0),
-				},
-			}
+			moreBtn := pg.Theme.StyledIconButton(pg.Icons.NavigationMore, &values.IconButtonStyle{
+				Background: color.NRGBA{},
+				Color:      pg.Theme.Color.Text,
+			})
+			moreBtn.SetInset(layout.UniformInset(values.MarginPadding0))
+			moreBtn.SetSize(values.MarginPadding25)
 			listItem.moreButton = moreBtn
 		} else {
 			listItem.addAcctClickable = pg.Theme.NewClickable(true)
@@ -884,7 +875,7 @@ func (pg *WalletPage) Handle() {
 		}
 
 		if listItem.wal.IsWatchingOnlyWallet() {
-			for listItem.moreButton.Button.Clicked() {
+			for listItem.moreButton.Clicked() {
 				pg.openPopup(index)
 			}
 		} else {

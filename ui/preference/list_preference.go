@@ -61,7 +61,7 @@ func NewListPreference(wallet *wallet.Wallet, l *load.Load, preferenceKey, defau
 	}
 
 	lp.cancelButton, _ = components.SubpageHeaderButtons(l)
-	lp.cancelButton.Icon = l.Icons.ContentClear
+	lp.cancelButton.SetIcon(l.Icons.ContentClear)
 
 	return &lp
 }
@@ -111,7 +111,7 @@ func (lp *ListPreferenceModal) Handle() {
 		lp.DismissModal(lp)
 	}
 
-	for lp.cancelButton.Button.Clicked() {
+	for lp.cancelButton.Clicked() {
 		lp.DismissModal(lp)
 	}
 

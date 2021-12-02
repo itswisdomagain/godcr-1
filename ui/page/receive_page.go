@@ -58,14 +58,15 @@ func NewReceivePage(l *load.Load) *ReceivePage {
 		},
 		info:           l.Theme.IconButton(decredmaterial.MustIcon(widget.NewIcon(icons.ActionInfo))),
 		copy:           l.Theme.Button("Copy"),
-		more:           l.Theme.PlainIconButton(l.Icons.NavMoreIcon),
+		more:           l.Theme.IconButton(l.Icons.NavMoreIcon),
 		newAddr:        l.Theme.Button("Generate new address"),
 		receiveAddress: l.Theme.Label(values.TextSize20, ""),
 		card:           l.Theme.Card(),
 		backdrop:       new(widget.Clickable),
 	}
 
-	pg.info.Inset, pg.info.Size = layout.UniformInset(values.MarginPadding5), values.MarginPadding20
+	pg.info.SetInset(layout.UniformInset(values.MarginPadding5))
+	pg.info.SetSize(values.MarginPadding20)
 	pg.copy.Background = color.NRGBA{}
 	pg.copy.HighlightColor = pg.Theme.Color.SurfaceHighlight
 	pg.copy.Color = pg.Theme.Color.Primary
@@ -75,8 +76,7 @@ func NewReceivePage(l *load.Load) *ReceivePage {
 		Left:   values.MarginPadding16,
 		Right:  values.MarginPadding16,
 	}
-	pg.more.Color = pg.Theme.Color.Gray1
-	pg.more.Inset = layout.UniformInset(values.MarginPadding0)
+	pg.more.SetInset(layout.UniformInset(values.MarginPadding0))
 	pg.newAddr.Inset = layout.Inset{
 		Top:    values.MarginPadding12,
 		Bottom: values.MarginPadding12,
@@ -90,7 +90,7 @@ func NewReceivePage(l *load.Load) *ReceivePage {
 	pg.receiveAddress.MaxLines = 1
 
 	pg.backButton, pg.infoButton = components.SubpageHeaderButtons(l)
-	pg.backButton.Icon = pg.Icons.ContentClear
+	pg.backButton.SetIcon(pg.Icons.ContentClear)
 
 	pg.selector = components.NewAccountSelector(pg.Load).
 		Title("Receiving account").
@@ -324,7 +324,7 @@ func (pg *ReceivePage) Handle() {
 		pg.isNewAddr = false
 	}
 
-	if pg.more.Button.Clicked() {
+	if pg.more.Clicked() {
 		pg.isNewAddr = !pg.isNewAddr
 		if pg.isInfo {
 			pg.isInfo = false
@@ -343,7 +343,7 @@ func (pg *ReceivePage) Handle() {
 		pg.isNewAddr = false
 	}
 
-	if pg.infoButton.Button.Clicked() {
+	if pg.infoButton.Clicked() {
 		info := modal.NewInfoModal(pg.Load).
 			Title("Receive DCR").
 			Body("Each time you receive a payment, a new address is generated to protect your privacy.").
@@ -351,7 +351,7 @@ func (pg *ReceivePage) Handle() {
 		pg.ShowModal(info)
 	}
 
-	if pg.backButton.Button.Clicked() {
+	if pg.backButton.Clicked() {
 		pg.PopFragment()
 	}
 

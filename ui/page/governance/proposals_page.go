@@ -144,11 +144,11 @@ func (pg *ProposalsPage) Handle() {
 		pg.WL.Wallet.SaveConfigValueForKey(load.FetchProposalConfigKey, true)
 	}
 
-	for pg.infoButton.Button.Clicked() {
+	for pg.infoButton.Clicked() {
 		pg.showInfoModal()
 	}
 
-	for pg.backButton.Button.Clicked() {
+	for pg.backButton.Clicked() {
 		pg.PopFragment()
 	}
 

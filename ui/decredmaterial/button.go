@@ -35,7 +35,8 @@ type ButtonLayout struct {
 }
 
 type IconButton struct {
-	material.IconButtonStyle
+	btn   material.IconButtonStyle
+	style *values.IconButtonStyle
 }
 
 func (t *Theme) Button(txt string) Button {
@@ -84,13 +85,11 @@ func (t *Theme) ButtonLayout() ButtonLayout {
 }
 
 func (t *Theme) IconButton(icon *widget.Icon) IconButton {
-	return IconButton{material.IconButton(t.Base, new(widget.Clickable), icon)}
+	return IconButton{material.IconButton(t.Base, new(widget.Clickable), icon), t.Styles.IconButtonStyle}
 }
 
-func (t *Theme) PlainIconButton(icon *widget.Icon) IconButton {
-	btn := IconButton{material.IconButton(t.Base, new(widget.Clickable), icon)}
-	btn.Background = color.NRGBA{}
-	return btn
+func (t *Theme) StyledIconButton(icon *widget.Icon, style *values.IconButtonStyle) IconButton {
+	return IconButton{material.IconButton(t.Base, new(widget.Clickable), icon), style}
 }
 
 func (b *Button) SetClickable(clickable *widget.Clickable) {
@@ -181,8 +180,62 @@ func (bl ButtonLayout) Layout(gtx layout.Context, w layout.Widget) layout.Dimens
 	return bl.ButtonLayoutStyle.Layout(gtx, w)
 }
 
+func (ib IconButton) SetIcon(icon *widget.Icon) {
+	ib.btn.Icon = icon
+}
+
+func (ib IconButton) SetInset(inset layout.Inset) {
+	print("======")
+	print(ib.btn.Size.String())
+	print(ib.btn.Inset.Bottom.String())
+	print("======\n")
+	ib.btn.Inset = inset
+	print("======")
+	print(ib.btn.Size.String())
+	print(ib.btn.Inset.Bottom.String())
+	print("======\n")
+}
+
+func (ib IconButton) SetSize(size unit.Value) {
+	print("======")
+	print(ib.btn.Size.String())
+	print(ib.btn.Inset.Bottom.String())
+	print("======\n")
+	ib.btn.Size = size
+	print("======")
+	print(ib.btn.Size.String())
+	print(ib.btn.Inset.Bottom.String())
+	print("======\n")
+}
+
+func (ib IconButton) SetClickable(button *widget.Clickable) {
+	ib.btn.Button = button
+}
+
+func (ib IconButton) SetStyle(style *values.IconButtonStyle) {
+	if style == nil {
+		print("======")
+		print(ib.btn.Size.String())
+		print(ib.btn.Inset.Bottom.String())
+		print("======\n")
+		return
+	}
+	ib.style = style
+}
+
+func (ib IconButton) Clicked() bool {
+	return ib.btn.Button.Clicked()
+}
+
 func (ib IconButton) Layout(gtx layout.Context) layout.Dimensions {
-	return ib.IconButtonStyle.Layout(gtx)
+	// Update the button properties before laying out in case they've
+	// changed since last layout. ib.style is a pointer that may be
+	// updated elsewhere.
+	if ib.style != nil {
+		ib.btn.Background = ib.style.Background
+		ib.btn.Color = ib.style.Color
+	}
+	return ib.btn.Layout(gtx)
 }
 
 type TextAndIconButton struct {

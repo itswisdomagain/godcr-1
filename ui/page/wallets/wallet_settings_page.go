@@ -111,8 +111,8 @@ func (pg *WalletSettingsPage) pageSections(gtx layout.Context, title string, bod
 						}),
 						layout.Flexed(1, func(gtx C) D {
 							if title == values.String(values.StrGeneral) {
-								pg.infoButton.Inset = layout.UniformInset(values.MarginPadding0)
-								pg.infoButton.Size = values.MarginPadding20
+								pg.infoButton.SetInset(layout.UniformInset(values.MarginPadding0))
+								pg.infoButton.SetSize(values.MarginPadding20)
 								return layout.E.Layout(gtx, pg.infoButton.Layout)
 							}
 							return D{}
@@ -254,7 +254,7 @@ func (pg *WalletSettingsPage) Handle() {
 		break
 	}
 
-	if pg.infoButton.Button.Clicked() {
+	if pg.infoButton.Clicked() {
 		info := modal.NewInfoModal(pg.Load).
 			Title("Spending password").
 			Body("A spending password helps secure your wallet transactions.").

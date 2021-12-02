@@ -89,7 +89,7 @@ func (t *Theme) IconEditor(editor *widget.Editor, hint string, icon *widget.Icon
 	e.isEditorButtonClickable = clickableIcon
 	e.editorIcon = NewIcon(icon)
 	e.editorIcon.Color = t.Color.Gray1
-	e.editorIconButton.IconButtonStyle.Icon = icon
+	e.editorIconButton.SetIcon(icon)
 	return e
 }
 
@@ -120,7 +120,7 @@ func (t *Theme) Editor(editor *widget.Editor, hint string) Editor {
 		m5: unit.Dp(5),
 
 		editorIconButton: IconButton{
-			material.IconButtonStyle{
+			btn: material.IconButtonStyle{
 				Size:       values.MarginPadding24,
 				Background: color.NRGBA{},
 				Color:      t.Color.Gray1,
@@ -129,7 +129,7 @@ func (t *Theme) Editor(editor *widget.Editor, hint string) Editor {
 			},
 		},
 		showHidePassword: IconButton{
-			material.IconButtonStyle{
+			btn: material.IconButtonStyle{
 				Size:       values.MarginPadding24,
 				Background: color.NRGBA{},
 				Color:      t.Color.Gray1,
@@ -257,11 +257,13 @@ func (e Editor) editor(gtx layout.Context) layout.Dimensions {
 					Left: e.m5,
 				}
 				return inset.Layout(gtx, func(gtx C) D {
-					icon := MustIcon(widget.NewIcon(icons.ActionVisibilityOff))
+					var icon *widget.Icon
 					if e.Editor.Mask == '*' {
 						icon = MustIcon(widget.NewIcon(icons.ActionVisibility))
+					} else {
+						icon = MustIcon(widget.NewIcon(icons.ActionVisibilityOff))
 					}
-					e.showHidePassword.Icon = icon
+					e.showHidePassword.SetIcon(icon)
 					return e.showHidePassword.Layout(gtx)
 				})
 			}
@@ -285,7 +287,7 @@ func (e Editor) editor(gtx layout.Context) layout.Dimensions {
 }
 
 func (e Editor) handleEvents() {
-	if e.showHidePassword.Button.Clicked() {
+	if e.showHidePassword.Clicked() {
 		if e.Editor.Mask == '*' {
 			e.Editor.Mask = 0
 		} else if e.Editor.Mask == 0 {
@@ -293,7 +295,7 @@ func (e Editor) handleEvents() {
 		}
 	}
 
-	if e.editorIconButton.Button.Clicked() {
+	if e.editorIconButton.Clicked() {
 		e.EditorIconButtonEvent()
 	}
 

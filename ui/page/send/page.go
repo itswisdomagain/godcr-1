@@ -302,11 +302,11 @@ func (pg *Page) Handle() {
 	pg.sendDestination.handle()
 	pg.amount.handle()
 
-	if pg.backButton.Button.Clicked() {
+	if pg.backButton.Clicked() {
 		pg.PopFragment()
 	}
 
-	if pg.infoButton.Button.Clicked() {
+	if pg.infoButton.Clicked() {
 		info := modal.NewInfoModal(pg.Load).
 			Title("Send DCR").
 			Body("Input or scan the destination wallet address and input the amount to send funds.").
@@ -314,7 +314,7 @@ func (pg *Page) Handle() {
 		pg.ShowModal(info)
 	}
 
-	for pg.moreOption.Button.Clicked() {
+	for pg.moreOption.Clicked() {
 		pg.moreOptionIsOpen = !pg.moreOptionIsOpen
 	}
 

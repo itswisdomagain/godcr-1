@@ -289,8 +289,8 @@ func (pg *SettingsPage) mainSection(gtx layout.Context, title string, body layou
 							}),
 							layout.Flexed(1, func(gtx C) D {
 								if title == values.String(values.StrSecurity) {
-									pg.infoButton.Inset = layout.UniformInset(values.MarginPadding0)
-									pg.infoButton.Size = values.MarginPadding20
+									pg.infoButton.SetInset(layout.UniformInset(values.MarginPadding0))
+									pg.infoButton.SetSize(values.MarginPadding20)
 									return layout.E.Layout(gtx, pg.infoButton.Layout)
 								}
 								return D{}
@@ -429,7 +429,7 @@ func (pg *SettingsPage) Handle() {
 		pg.wal.SaveConfigValueForKey(dcrlibwallet.BeepNewBlocksConfigKey, pg.beepNewBlocks.IsChecked())
 	}
 
-	if pg.infoButton.Button.Clicked() {
+	if pg.infoButton.Clicked() {
 		info := modal.NewInfoModal(pg.Load).
 			Title("Set up startup password").
 			Body("Startup password helps protect your wallet from unauthorized access.").

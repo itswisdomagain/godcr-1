@@ -28,16 +28,13 @@ type SubPage struct {
 }
 
 func SubpageHeaderButtons(l *load.Load) (decredmaterial.IconButton, decredmaterial.IconButton) {
-	backButton := l.Theme.PlainIconButton(l.Icons.NavigationArrowBack)
-	infoButton := l.Theme.PlainIconButton(l.Icons.ActionInfo)
+	backButton := l.Theme.IconButton(l.Icons.NavigationArrowBack)
+	backButton.SetSize(values.MarginPadding24)
+	backButton.SetInset(layout.UniformInset(values.MarginPadding4))
 
-	backButton.Color, infoButton.Color = l.Theme.Color.Gray1, l.Theme.Color.Gray1
-
-	m24 := values.MarginPadding24
-	backButton.Size, infoButton.Size = m24, m24
-
-	buttonInset := layout.UniformInset(values.MarginPadding4)
-	backButton.Inset, infoButton.Inset = buttonInset, buttonInset
+	infoButton := l.Theme.IconButton(l.Icons.ActionInfo)
+	infoButton.SetSize(values.MarginPadding24)
+	infoButton.SetInset(layout.UniformInset(values.MarginPadding4))
 
 	return backButton, infoButton
 }
@@ -131,7 +128,7 @@ func (sp *SubPage) SplitLayout(gtx layout.Context) layout.Dimensions {
 
 func (sp *SubPage) EventHandler() {
 	if sp.InfoTemplate != "" {
-		if sp.InfoButton.Button.Clicked() {
+		if sp.InfoButton.Clicked() {
 			modal.NewInfoModal(sp.Load).
 				Title(sp.Title).
 				SetupWithTemplate(sp.InfoTemplate).
@@ -140,7 +137,7 @@ func (sp *SubPage) EventHandler() {
 		}
 	}
 
-	if sp.BackButton.Button.Clicked() {
+	if sp.BackButton.Clicked() {
 		sp.Back()
 	}
 
