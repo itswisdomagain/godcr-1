@@ -217,6 +217,8 @@ func (mp *MainPage) OnNavigatedTo() {
 		mp.StartSyncing()
 		if mp.WL.Wallet.ReadBoolConfigValueForKey(load.FetchProposalConfigKey) {
 			go mp.WL.MultiWallet.Politeia.Sync()
+			println("[][][][] selected wallet ", *mp.Load.SelectedWallet)
+			go mp.WL.MultiWallet.Consensus.Sync(mp.WL.SortedWalletList())
 		}
 	}
 
@@ -413,6 +415,7 @@ func (mp *MainPage) OnNavigatedFrom() {
 
 	mp.WL.MultiWallet.RemoveAccountMixerNotificationListener(MainPageID)
 	mp.WL.MultiWallet.Politeia.RemoveNotificationListener(MainPageID)
+	mp.WL.MultiWallet.Consensus.RemoveNotificationListener(MainPageID)
 	mp.WL.MultiWallet.RemoveTxAndBlockNotificationListener(MainPageID)
 	mp.WL.MultiWallet.RemoveSyncProgressListener(MainPageID)
 }
