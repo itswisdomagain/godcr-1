@@ -99,40 +99,6 @@ func (mp *MainPage) OnProposalVoteFinished(proposal *dcrlibwallet.Proposal) {
 	mp.desktopNotifier(update)
 }
 
-// Consensus notifications
-func (mp *MainPage) OnAgendasSynced() {
-	mp.UpdateNotification(wallet.Agenda{
-		AgendaStatus: wallet.SyncedAgenda,
-	})
-}
-
-func (mp *MainPage) OnNewAgenda(agenda *dcrlibwallet.Agenda) {
-	update := wallet.Agenda{
-		AgendaStatus: wallet.NewAgendaFound,
-		Agenda:       agenda,
-	}
-	mp.UpdateNotification(update)
-	mp.desktopNotifier(update)
-}
-
-func (mp *MainPage) OnAgendaVoteStarted(agenda *dcrlibwallet.Agenda) {
-	update := wallet.Agenda{
-		AgendaStatus: wallet.AgendaInProgress,
-		Agenda:       agenda,
-	}
-	mp.UpdateNotification(update)
-	mp.desktopNotifier(update)
-}
-
-func (mp *MainPage) OnAgendaVoteFinished(agenda *dcrlibwallet.Agenda) {
-	update := wallet.Agenda{
-		AgendaStatus: wallet.AgendaFinished,
-		Agenda:       agenda,
-	}
-	mp.UpdateNotification(update)
-	mp.desktopNotifier(update)
-}
-
 // Sync notifications
 
 func (mp *MainPage) OnSyncStarted(wasRestarted bool) {

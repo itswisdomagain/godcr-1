@@ -96,7 +96,6 @@ func NewLoad() (*Load, error) {
 		UnspentOutputs: new(wallet.UnspentOutputs),
 		VspInfo:        new(wallet.VSP),
 		Proposals:      new(wallet.Proposals),
-		Agendas:      new(wallet.Agendas),
 
 		SelectedProposal: new(dcrlibwallet.Proposal),
 	}
@@ -106,7 +105,6 @@ func NewLoad() (*Load, error) {
 	r := &Receiver{
 		AcctMixerStatus: make(chan *wallet.AccountMixer),
 		SyncedProposal:  make(chan *wallet.Proposal),
-		SyncedAgenda:  make(chan *wallet.Agenda),
 	}
 
 >>>>>>> - add consensus listeners
@@ -163,7 +161,7 @@ func IconSet() Icons {
 		ConcealIcon:            decredmaterial.MustIcon(widget.NewIcon(icons.ActionVisibility)),
 		RevealIcon:             decredmaterial.MustIcon(widget.NewIcon(icons.ActionVisibilityOff)),
 		SearchIcon:             decredmaterial.MustIcon(widget.NewIcon(icons.ActionSearch)),
-		PlayIcon:             decredmaterial.MustIcon(widget.NewIcon(icons.AVPlayArrow)),
+		PlayIcon:               decredmaterial.MustIcon(widget.NewIcon(icons.AVPlayArrow)),
 
 		OverviewIcon:             decredmaterial.NewImage(decredIcons["overview"]),
 		OverviewIconInactive:     decredmaterial.NewImage(decredIcons["overview_inactive"]),
