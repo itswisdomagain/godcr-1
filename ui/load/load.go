@@ -100,14 +100,6 @@ func NewLoad() (*Load, error) {
 		SelectedProposal: new(dcrlibwallet.Proposal),
 	}
 
-<<<<<<< HEAD
-=======
-	r := &Receiver{
-		AcctMixerStatus: make(chan *wallet.AccountMixer),
-		SyncedProposal:  make(chan *wallet.Proposal),
-	}
-
->>>>>>> - add consensus listeners
 	icons := loadIcons()
 
 	th := decredmaterial.NewTheme(assets.FontCollection(), assets.DecredIcons, false)
