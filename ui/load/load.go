@@ -85,42 +85,6 @@ type Load struct {
 	ReloadApp           func()
 }
 
-<<<<<<< HEAD
-=======
-func NewLoad() (*Load, error) {
-
-	wl := &WalletLoad{
-		Wallet:         new(wallet.Wallet),
-		Account:        new(wallet.Account),
-		Transactions:   new(wallet.Transactions),
-		UnspentOutputs: new(wallet.UnspentOutputs),
-		VspInfo:        new(wallet.VSP),
-		Proposals:      new(wallet.Proposals),
-
-		SelectedProposal: new(dcrlibwallet.Proposal),
-	}
-
-	icons := loadIcons()
-
-	th := decredmaterial.NewTheme(assets.FontCollection(), assets.DecredIcons, false)
-	if th == nil {
-		return nil, errors.New("unexpected error while loading theme")
-	}
-
-	l := &Load{
-		Theme:    th,
-		Icons:    icons,
-		WL:       wl,
-		Receiver: &Receiver{},
-		Toast:    notification.NewToast(th),
-
-		Printer: message.NewPrinter(language.English),
-	}
-
-	return l, nil
-}
-
->>>>>>> - add consensus listeners
 func (l *Load) RefreshTheme() {
 	isDarkModeOn := l.WL.MultiWallet.ReadBoolConfigValueForKey(DarkModeConfigKey, false)
 	l.Theme.SwitchDarkMode(isDarkModeOn, assets.DecredIcons)
@@ -220,6 +184,7 @@ func IconSet() Icons {
 		TimerDarkMode:            decredmaterial.NewImage(decredIcons["timer_dm"]),
 		Rebroadcast:              decredmaterial.NewImage(decredIcons["rebroadcast"]),
 <<<<<<< HEAD
+<<<<<<< HEAD
 		SettingsActiveIcon:       decredmaterial.NewImage(decredIcons["settings_active"]),
 		SettingsInactiveIcon:     decredmaterial.NewImage(decredIcons["settings_inactive"]),
 =======
@@ -228,6 +193,12 @@ func IconSet() Icons {
 		LockinActiveIcon:     decredmaterial.NewImage(decredIcons["lockin_active"]),
 		LockinInactiveIcon:   decredmaterial.NewImage(decredIcons["lockin_inactive"]),
 >>>>>>> * add tab to governance page to switch between proposal and consensus pages
+=======
+		ActivatedActiveIcon:      decredmaterial.NewImage(decredIcons["activated_active"]),
+		ActivatedInactiveIcon:    decredmaterial.NewImage(decredIcons["activated_inactive"]),
+		LockinActiveIcon:         decredmaterial.NewImage(decredIcons["lockin_active"]),
+		LockinInactiveIcon:       decredmaterial.NewImage(decredIcons["lockin_inactive"]),
+>>>>>>> code cleanup
 
 		DexIcon:         decredmaterial.NewImage(decredIcons["dex_icon"]),
 		DexIconInactive: decredmaterial.NewImage(decredIcons["dex_icon_inactive"]),
