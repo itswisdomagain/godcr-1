@@ -7,7 +7,7 @@ import (
 
 	"gioui.org/font/gofont"
 	"gioui.org/layout"
-	// "gioui.org/text"
+	"gioui.org/text"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
 
@@ -89,8 +89,6 @@ func NewProposalsPage(l *load.Load) *ProposalsPage {
 			Text: "Abandoned",
 		},
 	}, values.ProposalDropdownGroup, 1)
-
-	// pg.initializeWidget()
 
 	return pg
 }
@@ -258,15 +256,26 @@ func (pg *ProposalsPage) Layout(gtx C) D {
 							}
 
 							return layout.Flex{}.Layout(gtx,
-								// layout.Rigid(func(gtx C) D {
-								// 	return layout.Flex{Axis: layout.Horizontal}.Layout(gtx,
-								// 		layout.Rigid(func(gtx C) D {
-								// 			txt := pg.Theme.Label(values.TextSize20, "Proposals")
-								// 			txt.Font.Weight = text.SemiBold
-								// 			return txt.Layout(gtx)
-								// 		}),
-								// 	)
-								// }),
+								layout.Rigid(func(gtx C) D {
+									return layout.Flex{Axis: layout.Horizontal}.Layout(gtx,
+										layout.Rigid(func(gtx C) D {
+											// return layout.Inset{Bottom: values.MarginPadding16}.Layout(gtx, func(gtx C) D {
+											return layout.Flex{}.Layout(gtx,
+												layout.Rigid(func(gtx C) D {
+													return layout.Flex{Axis: layout.Horizontal}.Layout(gtx,
+														layout.Rigid(func(gtx C) D {
+															txt := pg.Theme.Label(values.TextSize20, "Proposals")
+															txt.Font.Weight = text.SemiBold
+															return txt.Layout(gtx)
+														}),
+													)
+												}),
+											)
+											// })
+										}),
+										layout.Rigid(pg.infoButton.Layout),
+									)
+								}),
 								layout.Flexed(1, func(gtx C) D {
 									return layout.E.Layout(gtx, body)
 								}),
