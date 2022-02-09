@@ -37,7 +37,7 @@ type ListPage struct {
 	ctx       context.Context // page context
 	ctxCancel context.CancelFunc
 
-	tickets     []*transactionItem
+	tickets     []*components.TransactionItem
 	ticketsList *decredmaterial.ClickableList
 	scrollBar   *widget.List
 
@@ -151,7 +151,7 @@ func (pg *ListPage) fetchTickets() {
 		return
 	}
 
-	tickets, err := StakeToTransactionItems(pg.Load, txs, newestFirst, func(filter int32) bool {
+	tickets, err := components.StakeToTransactionItems(pg.Load, txs, newestFirst, func(filter int32) bool {
 		switch filter {
 		case dcrlibwallet.TxFilterVoted:
 			return ticketTypeDropdown == Voted
@@ -223,7 +223,7 @@ func (pg *ListPage) Layout(gtx C) D {
 	return components.UniformPadding(gtx, body)
 }
 
-func (pg *ListPage) ticketListLayout(gtx layout.Context, tickets []*transactionItem) layout.Dimensions {
+func (pg *ListPage) ticketListLayout(gtx layout.Context, tickets []*components.TransactionItem) layout.Dimensions {
 	return pg.ticketsList.Layout(gtx, len(tickets), func(gtx C, index int) D {
 		var ticket = tickets[index]
 
@@ -250,7 +250,7 @@ func (pg *ListPage) HandleUserInteractions() {
 	}
 
 	if clicked, selectedItem := pg.ticketsList.ItemClicked(); clicked {
-		ticketTx := pg.tickets[selectedItem].transaction
+		ticketTx := pg.tickets[selectedItem].Transaction
 		pg.ChangeFragment(tpage.NewTransactionDetailsPage(pg.Load, ticketTx))
 
 		// Check if this ticket is fully registered with a VSP
