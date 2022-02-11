@@ -149,10 +149,6 @@ func (pg *ProposalsPage) fetchProposals() {
 // displayed.
 // Part of the load.Page interface.
 func (pg *ProposalsPage) HandleUserInteractions() {
-	for pg.infoButton.Button.Clicked() {
-		// pg.showInfoModal()
-	}
-
 	for pg.backButton.Button.Clicked() {
 		pg.PopFragment()
 	}
@@ -210,28 +206,13 @@ func (pg *ProposalsPage) OnNavigatedFrom() {
 // Part of the load.Page interface.
 func (pg *ProposalsPage) Layout(gtx C) D {
 	if pg.WL.Wallet.ReadBoolConfigValueForKey(load.FetchProposalConfigKey) {
-		// return components.UniformPadding(gtx, func(gtx C) D {
 		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 			layout.Rigid(func(gtx C) D {
 				return layout.Flex{Axis: layout.Horizontal}.Layout(gtx,
-					// layout.Rigid(pg.backButton.Layout),
 					layout.Rigid(func(gtx C) D {
 						return layout.Inset{Bottom: values.MarginPadding16}.Layout(gtx, func(gtx C) D {
 							body := func(gtx C) D {
 								return layout.Flex{Axis: layout.Vertical, Alignment: layout.End}.Layout(gtx,
-									// layout.Rigid(func(gtx C) D {
-									// 	return layout.Flex{}.Layout(gtx,
-									// 		layout.Rigid(func(gtx C) D {
-									// 			txt := pg.Theme.Label(values.TextSize14, "Available Treasury Balance: ")
-									// 			txt.Font.Weight = text.SemiBold
-									// 			return txt.Layout(gtx)
-									// 		}),
-									// 		layout.Rigid(func(gtx C) D {
-									// 			// Todo get available treasury balance
-									// 			return components.LayoutBalanceSize(gtx, pg.Load, "678,678.687654 DCR", values.TextSize14)
-									// 		}),
-									// 	)
-									// }),
 									layout.Rigid(func(gtx C) D {
 										var text string
 										if pg.isSyncing {
@@ -248,9 +229,7 @@ func (pg *ProposalsPage) Layout(gtx C) D {
 											lastUpdatedInfo.Color = pg.Theme.Color.Success
 										}
 
-										return layout.Inset{Top: values.MarginPadding2}.Layout(gtx, func(gtx C) D {
-											return lastUpdatedInfo.Layout(gtx)
-										})
+										return layout.Inset{Top: values.MarginPadding2}.Layout(gtx, lastUpdatedInfo.Layout)
 									}),
 								)
 							}
@@ -259,7 +238,6 @@ func (pg *ProposalsPage) Layout(gtx C) D {
 								layout.Rigid(func(gtx C) D {
 									return layout.Flex{Axis: layout.Horizontal}.Layout(gtx,
 										layout.Rigid(func(gtx C) D {
-											// return layout.Inset{Bottom: values.MarginPadding16}.Layout(gtx, func(gtx C) D {
 											return layout.Flex{}.Layout(gtx,
 												layout.Rigid(func(gtx C) D {
 													return layout.Flex{Axis: layout.Horizontal}.Layout(gtx,
@@ -271,7 +249,6 @@ func (pg *ProposalsPage) Layout(gtx C) D {
 													)
 												}),
 											)
-											// })
 										}),
 										layout.Rigid(pg.infoButton.Layout),
 									)
@@ -327,7 +304,6 @@ func (pg *ProposalsPage) Layout(gtx C) D {
 				})
 			}),
 		)
-		// })
 	}
 	return D{}
 }
