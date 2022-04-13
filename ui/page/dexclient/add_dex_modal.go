@@ -218,38 +218,7 @@ func (md *addDexModal) doAddDexServer(serverAddr, appPass string) {
 			return
 		}
 
-		newFeeAssetSelectorModal(md.Load, dexServer).
-			OnAssetSelected(func(asset *core.SupportedAsset) {
-				cfReg := &confirmRegistration{
-					Load:      md.Load,
-					dexServer: dexServer,
-					isSending: &md.isSending,
-					Show:      md.Show,
-					completed: md.onDexAdded,
-					Dismiss:   md.Dismiss,
-				}
-				feeAssetName := asset.Symbol
-				if asset.Wallet != nil {
-					cfReg.confirm(feeAssetName, appPass, cert)
-					return
-				}
-				newCreateWalletModal(md.Load,
-					&walletInfoWidget{
-						image:    components.CoinImageBySymbol(&md.Icons, feeAssetName),
-						coinName: feeAssetName,
-						coinID:   asset.ID,
-					},
-					appPass,
-					func(wallModal *createWalletModal) {
-						cfReg.isSending = &wallModal.isSending
-						cfReg.Show = wallModal.Show
-						cfReg.Dismiss = wallModal.Dismiss
-						cfReg.confirm(feeAssetName, appPass, cert)
-					}).
-					SetRegisterAction(true).
-					Show()
-			}).
-			Show()
+		payFeeAndRegister(md.Load, dexServer, cert, appPass, md.onDexAdded)
 	}()
 }
 
@@ -356,40 +325,60 @@ func (md *addDexModal) customServerLayout(gtx C) D {
 	)
 }
 
-type confirmRegistration struct {
-	dexServer *core.Exchange
-	*load.Load
-	isSending *bool
-	Show      func()
-	Dismiss   func()
-	completed func(*core.Exchange)
-}
+func payFeeAndRegister(l *load.Load, dexServer *core.Exchange, cert []byte, appPass string, onDexAdded func(*core.Exchange)) {
+	// Create the assetSelectorModal now, it'll remain open/visible
+	// until the fee is paid and registration is completed or the
+	// user manually closes it.
+	assetSelectorModal := newFeeAssetSelectorModal(l, dexServer)
 
-func (cfReg *confirmRegistration) confirm(feeAssetName string, password string, cert []byte) {
-	modal.NewInfoModal(cfReg.Load).
-		Title(strConfirmReg).
-		Body(confirmRegisterModalDesc(cfReg.dexServer, feeAssetName)).
-		SetCancelable(false).
-		NegativeButton(values.String(values.StrCancel), func() {}).
-		PositiveButton(strRegister, func() {
-			go func() {
-				// Show previous modal and display loading status or error messages
-				cfReg.Show()
-				*cfReg.isSending = true
-				_, err := cfReg.Dexc().RegisterWithDEXServer(cfReg.dexServer.Host,
-					cert,
-					int64(cfReg.dexServer.Fee.Amt),
-					int32(cfReg.dexServer.Fee.ID),
-					[]byte(password))
-				if err != nil {
-					*cfReg.isSending = false
-					cfReg.Toast.NotifyError(err.Error())
-					return
-				}
-				cfReg.completed(cfReg.dexServer)
-				cfReg.Dismiss()
-			}()
-		}).Show()
+	confirmAndRegister := func(feeAsset *core.SupportedAsset) {
+		modal.NewInfoModal(l).
+			Title(strConfirmReg).
+			Body(confirmRegisterModalDesc(dexServer, feeAsset.Symbol)).
+			SetCancelable(false).
+			NegativeButton(values.String(values.StrCancel), func() {}).
+			PositiveButton(strRegister, func() {
+				go func() {
+					assetSelectorModal.modal.SetDisabled(true) // prevent re-selecting a fee asset
+					regFeeAsset := dexServer.RegFees[feeAsset.Symbol]
+					_, err := l.Dexc().RegisterWithDEXServer(dexServer.Host,
+						cert,
+						int64(regFeeAsset.Amt),
+						int32(regFeeAsset.ID),
+						[]byte(appPass))
+					if err != nil {
+						assetSelectorModal.modal.SetDisabled(false) // re-enable fee asset selection
+						assetSelectorModal.Toast.NotifyError(err.Error())
+						return
+					}
+					assetSelectorModal.Dismiss()
+					onDexAdded(dexServer)
+				}()
+			}).Show()
+	}
+
+	assetSelectorModal.
+		OnAssetSelected(func(asset *core.SupportedAsset) {
+			if asset.Wallet != nil {
+				confirmAndRegister(asset)
+				return
+			}
+
+			feeAssetName := asset.Symbol
+			newCreateWalletModal(l,
+				&walletInfoWidget{
+					image:    components.CoinImageBySymbol(&l.Icons, feeAssetName),
+					coinName: feeAssetName,
+					coinID:   asset.ID,
+				},
+				appPass,
+				func() {
+					confirmAndRegister(asset)
+				}).
+				SetRegisterAction(true).
+				Show()
+		}).
+		Show()
 }
 
 func confirmRegisterModalDesc(dexServer *core.Exchange, selectedFeeAsset string) string {

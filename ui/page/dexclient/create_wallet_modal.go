@@ -39,7 +39,7 @@ type createWalletModal struct {
 	isSending             bool
 	dexClientPassword     string
 	isRegisterAction      bool
-	walletCreated         func(md *createWalletModal)
+	walletCreated         func()
 }
 
 type walletInfoWidget struct {
@@ -48,7 +48,7 @@ type walletInfoWidget struct {
 	coinID   uint32
 }
 
-func newCreateWalletModal(l *load.Load, wallInfo *walletInfoWidget, appPass string, walletCreated func(md *createWalletModal)) *createWalletModal {
+func newCreateWalletModal(l *load.Load, wallInfo *walletInfoWidget, appPass string, walletCreated func()) *createWalletModal {
 	md := &createWalletModal{
 		Load:              l,
 		modal:             l.Theme.ModalFloatTitle(),
@@ -201,7 +201,7 @@ func (md *createWalletModal) doCreateWallet(appPass, walletPass []byte) {
 		}
 
 		md.Dismiss()
-		md.walletCreated(md)
+		md.walletCreated()
 	}()
 }
 
