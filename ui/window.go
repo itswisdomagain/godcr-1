@@ -161,6 +161,12 @@ func (win *Window) HandleEvents() {
 			return // exits the loop, caller will exit the program.
 
 		case system.FrameEvent:
+			for _, event := range evt.Queue.Events(win.Window) {
+				if keyEvent, isKeyEvent := event.(key.Event); isKeyEvent && keyEvent.State == key.Press {
+					win.handleKeyEvent(&keyEvent)
+				}
+			}
+
 			win.displayWindow(evt)
 
 		case key.Event:
@@ -195,6 +201,10 @@ func (win *Window) displayWindow(evt system.FrameEvent) {
 	// Draw the window's UI components into an op.Ops.
 	gtx := layout.NewContext(&op.Ops{}, evt)
 	win.drawWindowUI(gtx)
+
+	m := op.Record(gtx.Ops)
+	key.InputOp{Tag: win.Window, Keys: "(Shift)-[Tab]|↑|↓|⏎|⌤"}.Add(gtx.Ops)
+	op.Defer(gtx.Ops, m.Stop())
 
 	// Render the window's UI components on screen.
 	evt.Frame(gtx.Ops)
