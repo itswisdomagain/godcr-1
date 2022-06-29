@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"decred.org/dcrdex/client/comms"
 	"decred.org/dcrdex/client/core"
 	"decred.org/dcrdex/client/db"
 	"gioui.org/layout"
@@ -64,7 +65,7 @@ func (pg *Page) Layout(gtx C) D {
 			return pg.pageSections(gtx, pg.welcomeLayout(&pg.addDexBtn))
 		default:
 			d := pg.dexServer()
-			if !d.Connected {
+			if d.ConnectionStatus != comms.Connected {
 				return pg.pageSections(gtx,
 					pg.Theme.Label(values.TextSize16, fmt.Sprintf(nStrConnHostError, d.Host)).Layout)
 			}
